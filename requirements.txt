@@ -1,0 +1,12 @@
+str
+starlette==0.13.6
+fastapi
+pyhumps
+uvicorn
+pydantic
+sqlalchemy
+psycopg2
+typing
+DateTime
+python-multipart
+fastapi-camelcase
