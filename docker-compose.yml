@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+
+  cockpit-service:
+    build: .
+    ports:
+      - "8006:8006"
+    environment:
+      - SQLALCHEMY_DATABASE_URL=postgres://pop:password1@db/pop
+
+networks:
+  default:
+    external:
+      name: docker-setup_default
