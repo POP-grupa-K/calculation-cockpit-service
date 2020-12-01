@@ -48,3 +48,14 @@ def get_task_schema(id_task: int, db: Session):
         return cockpit_model_to_schema(task_model)
     raise NoSuchTaskException(f"No task with id = {id_task}")
 
+
+def get_task_models_by_status_and_app(id_app: int, status: str, db: Session):
+    tasks = db.query(CockpitModel).filter(CockpitModel.id_app == id_app and CockpitModel.status == status)
+    return tasks
+
+
+def tasks_to_json_list(tasks_models):
+    tasks = []
+    for task in tasks_models:
+        tasks.append(cockpit_model_to_schema(task).json())
+    return tasks
