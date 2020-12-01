@@ -4,7 +4,7 @@ from cockpit.schema import cockpit_schema
 from run import Base
 
 
-class CockputModel(Base):
+class CockpitModel(Base):
     __tablename__ = 'cockpit'
 
     # don't blame me, blame the devops for weird field naming
