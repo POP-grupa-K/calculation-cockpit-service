@@ -1,0 +1,3 @@
+class NoSuchTaskException(Exception):
+    pass
+

@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-
+from cockpit.exceptions.cockpit_exceptions import NoSuchTaskException
 from cockpit.model.cockpit_model import CockpitModel
 from cockpit.schema.cockpit_schema import CockpitSchema
 from typing import List
@@ -33,3 +33,18 @@ def get_all_tasks_as_json_list(db: Session):
     for task in tasks_models:
         tasks.append(cockpit_model_to_schema(task).json())
     return tasks
+
+
+def get_task_model(id_task: int, db: Session):
+    task = db.query(CockpitModel).filter(CockpitModel.id_task == id_task)
+    if task.first():
+        return task.first()
+    return None
+
+
+def get_task_schema(id_task: int, db: Session):
+    task_model = get_task_model(id_task, db)
+    if task_model:
+        return cockpit_model_to_schema(task_model)
+    raise NoSuchTaskException(f"No task with id = {id_task}")
+
