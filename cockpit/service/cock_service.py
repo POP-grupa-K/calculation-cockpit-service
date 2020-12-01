@@ -50,7 +50,8 @@ def get_task_schema(id_task: int, db: Session):
 
 
 def get_task_models_by_status_and_app(id_app: int, status: str, db: Session):
-    tasks = db.query(CockpitModel).filter(CockpitModel.id_app == id_app and CockpitModel.status == status)
+    tasks = db.query(CockpitModel).filter(CockpitModel.id_app == id_app).filter(CockpitModel.status == status)
+
     return tasks
 
 
