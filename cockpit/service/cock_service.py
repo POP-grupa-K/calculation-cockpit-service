@@ -18,7 +18,7 @@ def create_task(app: CockpitSchema, db: Session) -> int:
     db.add(new_task)
     db.commit()
     db.refresh(new_task)
-    return new_task.id_app
+    return new_task.id_task
 
 
 def get_all_tasks(db: Session) -> List[CockpitModel]:
