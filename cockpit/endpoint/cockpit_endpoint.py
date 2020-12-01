@@ -34,7 +34,7 @@ async def list_tasks(db: Session = Depends(get_db)):
     return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@router.put("/add", tags=["Backend AppStore"])
+@router.post("/add", tags=["Backend AppStore"])
 async def add_task(cock: CockpitSchema, db: Session = Depends(get_db)) -> str:
     try:
         cock_id = create_task(cock, db)
