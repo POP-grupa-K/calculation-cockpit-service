@@ -22,7 +22,7 @@ def create_task(app: CockpitSchema, db: Session) -> int:
 
 
 def get_all_tasks(db: Session) -> List[CockpitModel]:
-    tasks_models = db.query(CockpitModel).all()
+    tasks_models = db.query(CockpitModel).filter(CockpitModel.status != "deleted")
     return tasks_models
 
 
