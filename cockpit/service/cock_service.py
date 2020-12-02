@@ -41,6 +41,16 @@ def get_task_model(id_task: int, db: Session):
         return task.first()
     return None
 
+def update_task(id_task: int, updated_task: CockpitSchema, db: Session):
+    task_model: CockpitModel = get_task_model(id_task, db)
+    if task_model is None:
+            raise NoSuchTaskException(f"No task with id = {id_task}")
+    task_model.name = updated_task.name
+    task_model.version = updated_task.version
+    task_model.status = updated_task.status
+    db.commit()
+    return cockpit_model_to_schema(task_model)
+
 
 def get_task_schema(id_task: int, db: Session):
     task_model = get_task_model(id_task, db)
