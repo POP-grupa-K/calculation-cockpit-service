@@ -10,7 +10,8 @@ from starlette.responses import JSONResponse
 from cockpit.exceptions.cockpit_exceptions import NoSuchTaskException
 from cockpit.schema.cockpit_schema import CockpitSchema
 from cockpit.service.cock_service import create_task, get_all_tasks_as_json_list, get_task_schema, \
-    get_task_models_by_status_and_app, tasks_to_json_list, update_task, set_task_status_to_running
+    get_task_models_by_status_and_app, tasks_to_json_list, update_task, set_task_status_to_running, \
+    set_task_status_to_stopped
 from cockpit.utils.message_encoder.json_message_encoder import encode_to_json_message
 from run import SessionLocal
 from fastapi.responses import JSONResponse
@@ -82,6 +83,18 @@ async def run_task(id_task: int, db: Session = Depends(get_db)):
     try:
         set_task_status_to_running(id_task, db)
         return JSONResponse(status_code=status.HTTP_200_OK, content=encode_to_json_message(f"Task with id = {id_task} is running"))
+    except NoSuchTaskException as e:
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=encode_to_json_message(f"No task with id = {id_task}"))
+    except Exception as e:
+        traceback.print_exc(file=sys.stdout)
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content=encode_to_json_message(e))
+
+
+@router.post("/{id_task}/stop", tags=["Backend Cockpit"])
+async def stop_task(id_task: int, db: Session = Depends(get_db)):
+    try:
+        set_task_status_to_stopped(id_task, db)
+        return JSONResponse(status_code=status.HTTP_200_OK, content=encode_to_json_message(f"Task with id = {id_task} is stopped"))
     except NoSuchTaskException as e:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=encode_to_json_message(f"No task with id = {id_task}"))
     except Exception as e:
