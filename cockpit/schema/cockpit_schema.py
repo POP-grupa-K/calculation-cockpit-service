@@ -5,13 +5,14 @@ from fastapi_camelcase import CamelModel
 
 class CockpitSchema(CamelModel):
     # don't blame me, blame the devops for weird field naming
+    # +1
     idtask: Optional[int] = None
-    name: Optional[str]
+    name: str
     version: Optional[int] = None
-    reservedcredits: Optional[int] = None
-    idapp: Optional[str] = None
-    status: Optional[str]
-    iduser: Optional[str] = None
+    reservedcredits: int
+    idapp: int
+    status: Optional[str] = 'created'
+    iduser: int
 
     class Config:
         orm_mode = True

@@ -5,7 +5,6 @@ from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from starlette import status
-from starlette.responses import JSONResponse
 
 from cockpit.exceptions.cockpit_exceptions import NoSuchTaskException
 from cockpit.schema.cockpit_schema import CockpitSchema
@@ -35,7 +34,7 @@ async def list_tasks(db: Session = Depends(get_db)):
     return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@router.post("/add", tags=["Backend AppStore"])
+@router.post("/", tags=["Backend AppStore"])
 async def add_task(cock: CockpitSchema, db: Session = Depends(get_db)):
     try:
         cock_id = create_task(cock, db)
