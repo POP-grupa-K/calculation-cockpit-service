@@ -11,6 +11,7 @@ class CockpitSchema(CamelModel):
     reservedcredits: Optional[int] = None
     idapp: Optional[str] = None
     status: Optional[str]
+    iduser: Optional[str] = None
 
     class Config:
         orm_mode = True

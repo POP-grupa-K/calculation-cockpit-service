@@ -41,10 +41,11 @@ def get_task_model(id_task: int, db: Session):
         return task.first()
     return None
 
+
 def update_task(id_task: int, updated_task: CockpitSchema, db: Session):
     task_model: CockpitModel = get_task_model(id_task, db)
     if task_model is None:
-            raise NoSuchTaskException(f"No task with id = {id_task}")
+        raise NoSuchTaskException(f"No task with id = {id_task}")
     task_model.name = updated_task.name
     task_model.version = updated_task.version
     task_model.status = updated_task.status
@@ -70,3 +71,15 @@ def tasks_to_json_list(tasks_models):
     for task in tasks_models:
         tasks.append(cockpit_model_to_schema(task).json())
     return tasks
+
+
+def get_all_user_tasks(id_user, db: Session):
+    user_tasks = db.query(CockpitModel).filter(CockpitModel.id_user == id_user)
+
+    user_package = {}
+    for id_app in set([task.id_app for task in user_tasks]):
+        # TODO Getting App name from AppStore
+        # r = requests.request('GET', 'https://localhost:8005/appstore/' + str(id_app))
+        user_package["TODO-AppName" + str(id_app)] = tasks_to_json_list(user_tasks.filter(CockpitModel.id_app == id_app))
+
+    return user_package

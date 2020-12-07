@@ -20,6 +20,7 @@ class CockpitModel(Base):
     private = Column('private', String)
     cluster_allocation = Column('clusterallocation', String)
     id_app = Column('idapp', Integer)
+    id_user = Column('iduser', String)
 
     def __init__(self, idtask, name, reservedcredits, idapp, status):
         self.id_task = idtask
