@@ -76,6 +76,7 @@ def set_task_status_to_running(id_task: int, db: Session):
     task: CockpitModel = get_task_model(id_task, db)
     if task:
         task.status = "ongoing"
+        db.commit()
     raise NoSuchTaskException(f"No task with id = {id_task}")
 
 
@@ -83,4 +84,5 @@ def set_task_status_to_stopped(id_task: int, db: Session):
     task: CockpitModel = get_task_model(id_task, db)
     if task:
         task.status = "stopped"
+        db.commit()
     raise NoSuchTaskException(f"No task with id = {id_task}")
