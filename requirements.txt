@@ -10,3 +10,4 @@ typing
 DateTime
 python-multipart
 fastapi-camelcase
+requests
