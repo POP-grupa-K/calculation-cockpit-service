@@ -2,7 +2,8 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from cockpit.exceptions.cockpit_exceptions import NoSuchTaskException
+from cockpit.exceptions.cockpit_exceptions import NoSuchTaskException, TaskIsAlreadyRunningException, \
+    TaskIsAlreadyStoppedException
 from cockpit.model.cockpit_model import CockpitModel
 from cockpit.schema.cockpit_schema import CockpitSchema
 from typing import List
@@ -83,3 +84,25 @@ def get_all_user_tasks(id_user, db: Session):
         user_package["TODO-AppName" + str(id_app)] = tasks_to_json_list(user_tasks.filter(CockpitModel.id_app == id_app))
 
     return user_package
+
+
+def set_task_status_to_running(id_task: int, db: Session):
+    task: CockpitModel = get_task_model(id_task, db)
+    if task:
+        if task.status == "ongoing":
+            raise TaskIsAlreadyRunningException(f"Task with id = {id_task} is already running")
+        task.status = "ongoing"
+        db.commit()
+    else:
+        raise NoSuchTaskException(f"No task with id = {id_task}")
+
+
+def set_task_status_to_stopped(id_task: int, db: Session):
+    task: CockpitModel = get_task_model(id_task, db)
+    if task:
+        if task.status == "stopped":
+            raise TaskIsAlreadyStoppedException(f"Task with id = {id_task} is already stopped")
+        task.status = "stopped"
+        db.commit()
+    else:
+        raise NoSuchTaskException(f"No task with id = {id_task}")
