@@ -2,7 +2,8 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from cockpit.exceptions.cockpit_exceptions import NoSuchTaskException
+from cockpit.exceptions.cockpit_exceptions import NoSuchTaskException, TaskIsAlreadyRunningException, \
+    TaskIsAlreadyStoppedException
 from cockpit.model.cockpit_model import CockpitModel
 from cockpit.schema.cockpit_schema import CockpitSchema
 from typing import List
@@ -75,6 +76,8 @@ def tasks_to_json_list(tasks_models):
 def set_task_status_to_running(id_task: int, db: Session):
     task: CockpitModel = get_task_model(id_task, db)
     if task:
+        if task.status == "ongoing":
+            raise TaskIsAlreadyRunningException(f"Task with id = {id_task} is already running")
         task.status = "ongoing"
         db.commit()
     else:
@@ -84,6 +87,8 @@ def set_task_status_to_running(id_task: int, db: Session):
 def set_task_status_to_stopped(id_task: int, db: Session):
     task: CockpitModel = get_task_model(id_task, db)
     if task:
+        if task.status == "stopped":
+            raise TaskIsAlreadyStoppedException(f"Task with id = {id_task} is already stopped")
         task.status = "stopped"
         db.commit()
     else:
