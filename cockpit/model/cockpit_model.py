@@ -31,4 +31,4 @@ class CockpitModel(Base):
 
     @classmethod
     def from_schema(cls, cockpit_schema: cockpit_schema.CockpitSchema):
-        return cls(cockpit_schema.name, cockpit_schema.reservedcredits, cockpit_schema.idapp, cockpit_schema.status, cockpit_schema.iduser)
+        return cls(cockpit_schema.name, cockpit_schema.reservedcredits, cockpit_schema.id_app, cockpit_schema.status, cockpit_schema.id_user)
