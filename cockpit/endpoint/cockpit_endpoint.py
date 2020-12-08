@@ -5,14 +5,13 @@ from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from starlette import status
-from starlette.responses import JSONResponse
 
 from cockpit.exceptions.cockpit_exceptions import NoSuchTaskException, TaskIsAlreadyRunningException, \
     TaskIsAlreadyStoppedException
 from cockpit.schema.cockpit_schema import CockpitSchema
 from cockpit.service.cockpit_service import create_task, get_all_tasks_as_json_list, get_task_schema, \
     get_task_models_by_status_and_app, tasks_to_json_list, update_task, set_task_status_to_running, \
-    set_task_status_to_stopped, delete_task
+    set_task_status_to_stopped, get_all_user_tasks, delete_task
 from cockpit.utils.message_encoder.json_message_encoder import encode_to_json_message
 from run import SessionLocal
 from fastapi.responses import JSONResponse
@@ -37,7 +36,7 @@ async def list_tasks(db: Session = Depends(get_db)):
     return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@router.post("/add", tags=["Backend AppStore"])
+@router.post("/", tags=["Backend AppStore"])
 async def add_task(cock: CockpitSchema, db: Session = Depends(get_db)) -> str:
     try:
         cock_id = create_task(cock, db)
@@ -78,6 +77,14 @@ async def get_tasks(id_app: int, task_status: str, db: Session = Depends(get_db)
 
     return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@router.get("/user/tasks/{id_user}", tags=["Backend Cockpit"])
+async def get_user_tasks(id_user: int, db: Session = Depends(get_db)):
+    try:
+        user_tasks = get_all_user_tasks(id_user, db)
+        return JSONResponse(status_code=status.HTTP_200_OK, content=jsonable_encoder(user_tasks))
+    except Exception as e:
+        traceback.print_exc(file=sys.stdout)
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content=encode_to_json_message(e))
 
 @router.post("/{id_task}/run", tags=["Backend Cockpit"])
 async def run_task(id_task: int, db: Session = Depends(get_db)):
