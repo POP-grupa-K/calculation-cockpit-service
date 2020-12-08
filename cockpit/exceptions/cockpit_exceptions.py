@@ -9,3 +9,5 @@ class TaskIsAlreadyRunningException(Exception):
 class TaskIsAlreadyStoppedException(Exception):
     pass
 
+class TaskAppNotAvailable(Exception):
+    pass
