@@ -3,17 +3,18 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 
 from cockpit.exceptions.cockpit_exceptions import NoSuchTaskException, TaskIsAlreadyRunningException, \
-    TaskIsAlreadyStoppedException
+    TaskIsAlreadyStoppedException, TaskAppNotAvailable
 from cockpit.model.cockpit_model import CockpitModel
 from cockpit.schema.cockpit_schema import CockpitSchema
 from typing import List
-
+import requests
 from cockpit.utils.mapper.cockpit_mapper import cockpit_model_to_schema
 
 
 def create_task(app: CockpitSchema, db: Session) -> int:
     new_task = CockpitModel.from_schema(app)
-
+    if not check_if_app_is_available(app.idapp):
+        raise TaskAppNotAvailable(f"App with id = {app.idapp} is not availble")
     new_task.date_update = datetime.now().isoformat()
 
     db.add(new_task)
@@ -89,12 +90,22 @@ def get_all_user_tasks(id_user, db: Session):
 def set_task_status_to_running(id_task: int, db: Session):
     task: CockpitModel = get_task_model(id_task, db)
     if task:
+        if not check_if_app_is_available(task.id_app):
+            raise TaskAppNotAvailable(f"App with id = {task.id_app} is not availble")
         if task.status == "ongoing":
             raise TaskIsAlreadyRunningException(f"Task with id = {id_task} is already running")
         task.status = "ongoing"
         db.commit()
     else:
         raise NoSuchTaskException(f"No task with id = {id_task}")
+
+def check_if_app_is_available(id_app: int):    
+        res = requests.get("http://appstore-service:8005/appstore/{}".format(id_app))
+        app_details = res.json()
+        if (app_details['status'] == 'available'):
+            return True    
+        return False
+
 
 
 def delete_task(id_task: int, db: Session):

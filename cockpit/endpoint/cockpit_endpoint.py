@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from starlette import status
 
 from cockpit.exceptions.cockpit_exceptions import NoSuchTaskException, TaskIsAlreadyRunningException, \
-    TaskIsAlreadyStoppedException
+    TaskIsAlreadyStoppedException, TaskAppNotAvailable
 from cockpit.schema.cockpit_schema import CockpitSchema
 from cockpit.service.cockpit_service import create_task, get_all_tasks_as_json_list, get_task_schema, \
     get_task_models_by_status_and_app, tasks_to_json_list, update_task, set_task_status_to_running, \
@@ -42,6 +42,8 @@ async def add_task(cock: CockpitSchema, db: Session = Depends(get_db)) -> str:
         cock_id = create_task(cock, db)
         return JSONResponse(status_code=status.HTTP_201_CREATED, content=encode_to_json_message(cock_id))
 
+    except TaskAppNotAvailable as e:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=encode_to_json_message(f"App from task is not availble"))
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content=encode_to_json_message(e))
 
@@ -95,6 +97,8 @@ async def run_task(id_task: int, db: Session = Depends(get_db)):
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=encode_to_json_message(f"No task with id = {id_task}"))
     except TaskIsAlreadyRunningException as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=encode_to_json_message(f"Task with id = {id_task} is already running"))
+    except TaskAppNotAvailable as e:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=encode_to_json_message(f"App from task is not availble"))
     except Exception as e:
         traceback.print_exc(file=sys.stdout)
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content=encode_to_json_message(e))
