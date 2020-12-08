@@ -11,7 +11,8 @@ from cockpit.exceptions.cockpit_exceptions import NoSuchTaskException, TaskIsAlr
 from cockpit.schema.cockpit_schema import CockpitSchema
 from cockpit.service.cockpit_service import create_task, get_all_tasks_as_json_list, get_task_schema, \
     get_task_models_by_status_and_app, tasks_to_json_list, update_task, set_task_status_to_running, \
-    set_task_status_to_stopped, get_all_user_tasks
+    set_task_status_to_stopped, get_all_user_tasks \
+    set_task_status_to_stopped, delete_task
 from cockpit.utils.message_encoder.json_message_encoder import encode_to_json_message
 from run import SessionLocal
 from fastapi.responses import JSONResponse
@@ -113,4 +114,14 @@ async def stop_task(id_task: int, db: Session = Depends(get_db)):
         traceback.print_exc(file=sys.stdout)
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content=encode_to_json_message(e))
 
+
+@router.delete("/{id_task}", tags=["Backend Cockpit"])
+async def delete_task_by_id(id_task: int, db: Session = Depends(get_db)):
+    try:
+        delete_task(id_task, db)
+        return JSONResponse(status_code=status.HTTP_200_OK, content=encode_to_json_message("OK"))
+    except NoSuchTaskException as e:
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=encode_to_json_message(f"No task with id = {id_task}"))
+    except Exception as e:
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
