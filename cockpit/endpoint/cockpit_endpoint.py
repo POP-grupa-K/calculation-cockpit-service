@@ -11,8 +11,7 @@ from cockpit.exceptions.cockpit_exceptions import NoSuchTaskException, TaskIsAlr
 from cockpit.schema.cockpit_schema import CockpitSchema
 from cockpit.service.cockpit_service import create_task, get_all_tasks_as_json_list, get_task_schema, \
     get_task_models_by_status_and_app, tasks_to_json_list, update_task, set_task_status_to_running, \
-    set_task_status_to_stopped, get_all_user_tasks \
-    set_task_status_to_stopped, delete_task
+    set_task_status_to_stopped, get_all_user_tasks, delete_task
 from cockpit.utils.message_encoder.json_message_encoder import encode_to_json_message
 from run import SessionLocal
 from fastapi.responses import JSONResponse
