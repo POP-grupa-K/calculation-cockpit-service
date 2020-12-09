@@ -8,7 +8,7 @@ class CockpitSchema(CamelModel):
     id_task: Optional[int] = None
     name: str
     version: Optional[int] = None
-    reservedcredits: int
+    reserved_credits: int
     id_app: int
     status: Optional[str] = "created"
     id_user: int
