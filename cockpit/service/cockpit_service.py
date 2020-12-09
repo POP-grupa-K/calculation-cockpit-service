@@ -112,10 +112,11 @@ def set_task_status_to_running(id_task: int, db: Session):
 
 def check_if_app_is_available(id_app: int):
     # FIXME url w envach trzeba trzymac
-    res = requests.get("http://appstore:8005/appstore/{}".format(id_app))
-    app_details = res.json()
-    if (app_details['status'] == 'available'):
-        return True
+    res = requests.get("http://appstore:8005/appstore/{}".format(id_app))    
+    if (res.status_code == 200):
+        app_details = res.json()
+        if (app_details['status'] == 'available'):
+            return True
     return False
 
 
