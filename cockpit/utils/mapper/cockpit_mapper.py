@@ -7,7 +7,7 @@ def cockpit_model_to_schema(cockpit_model: CockpitModel) -> CockpitSchema:
         id_task=cockpit_model.id_task,
         name=cockpit_model.name,
         version=cockpit_model.version,
-        reservedcredits=cockpit_model.reserved_credits,
+        reserved_credits=cockpit_model.reserved_credits,
         id_app=cockpit_model.id_app,
         status=cockpit_model.status,
         id_user=cockpit_model.id_user
