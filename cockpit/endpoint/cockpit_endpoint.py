@@ -37,7 +37,7 @@ async def list_tasks(db: Session = Depends(get_db)):
 
 
 @router.post("/", tags=["Backend AppStore"])
-async def add_task(cock: CockpitSchema, db: Session = Depends(get_db)) -> str:
+async def add_task(cock: CockpitSchema, db: Session = Depends(get_db)):
     try:
         cock_id = create_task(cock, db)
         return JSONResponse(status_code=status.HTTP_201_CREATED, content=encode_to_json_message(cock_id))
@@ -59,6 +59,7 @@ async def get_task(id_task: int, cock: CockpitSchema, db: Session = Depends(get_
         traceback.print_exc(file=sys.stdout)
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content=encode_to_json_message(e))
 
+
 @router.get("/{id_task}", tags=["Backend Cockpit"])
 async def edit_task(id_task: int, db: Session = Depends(get_db)):
     try:
@@ -70,14 +71,16 @@ async def edit_task(id_task: int, db: Session = Depends(get_db)):
         traceback.print_exc(file=sys.stdout)
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content=encode_to_json_message(e))
 
+
 @router.get("/{id_app}/{task_status}", tags=["Backend Cockpit"])
-async def get_tasks(id_app: int, task_status: str, db: Session = Depends(get_db)):
+async def get_tasks_for_app(id_app: int, task_status: str, db: Session = Depends(get_db)):
     task_models = get_task_models_by_status_and_app(id_app, task_status, db)
     tasks = tasks_to_json_list(task_models)
     if tasks is not None:
         return JSONResponse(status_code=status.HTTP_200_OK, content=jsonable_encoder(tasks))
 
     return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @router.get("/user/tasks/{id_user}", tags=["Backend Cockpit"])
 async def get_user_tasks(id_user: int, db: Session = Depends(get_db)):
@@ -87,6 +90,7 @@ async def get_user_tasks(id_user: int, db: Session = Depends(get_db)):
     except Exception as e:
         traceback.print_exc(file=sys.stdout)
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content=encode_to_json_message(e))
+
 
 @router.post("/{id_task}/run", tags=["Backend Cockpit"])
 async def run_task(id_task: int, db: Session = Depends(get_db)):
