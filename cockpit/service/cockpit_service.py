@@ -80,9 +80,15 @@ def get_all_user_tasks(id_user, db: Session):
 
     user_package = {}
     for id_app in set([task.id_app for task in user_tasks]):
-        # TODO Getting App name from AppStore
-        # r = requests.request('GET', 'https://localhost:8005/appstore/' + str(id_app))
-        user_package["TODO-AppName" + str(id_app)] = tasks_to_json_list(user_tasks.filter(CockpitModel.id_app == id_app))
+        #FIXME url w envach trzeba trzymac
+        res = requests.get("http://appstore:8005/appstore/{}".format(id_app))
+        if res.status_code == 200:
+            app_details = res.json()
+            app_name = app_details["nameApp"]
+        else:
+            app_name = str(id_app)
+
+        user_package[app_name] = tasks_to_json_list(user_tasks.filter(CockpitModel.id_app == id_app))
 
     return user_package
 
