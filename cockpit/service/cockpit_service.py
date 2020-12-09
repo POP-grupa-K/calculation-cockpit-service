@@ -13,8 +13,8 @@ from cockpit.utils.mapper.cockpit_mapper import cockpit_model_to_schema
 
 def create_task(app: CockpitSchema, db: Session) -> int:
     new_task = CockpitModel.from_schema(app)
-    if not check_if_app_is_available(app.idapp):
-        raise TaskAppNotAvailable(f"App with id = {app.idapp} is not availble")
+    if not check_if_app_is_available(app.id_app):
+        raise TaskAppNotAvailable(f"App with id = {app.id_app} is not availble")
     new_task.date_update = datetime.now().isoformat()
 
     db.add(new_task)
@@ -99,8 +99,9 @@ def set_task_status_to_running(id_task: int, db: Session):
     else:
         raise NoSuchTaskException(f"No task with id = {id_task}")
 
-def check_if_app_is_available(id_app: int):    
-        res = requests.get("http://appstore-service:8005/appstore/{}".format(id_app))
+def check_if_app_is_available(id_app: int):
+        #FIXME url w envach trzeba trzymac
+        res = requests.get("http://appstore:8005/appstore/{}".format(id_app))
         app_details = res.json()
         if (app_details['status'] == 'available'):
             return True    
