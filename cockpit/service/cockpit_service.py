@@ -58,7 +58,18 @@ def update_task(id_task: int, updated_task: CockpitSchema, db: Session):
 def get_task_schema(id_task: int, db: Session):
     task_model = get_task_model(id_task, db)
     if task_model:
-        return cockpit_model_to_schema(task_model)
+        res = requests.get("http://appstore:8005/appstore/{}".format(task_model.id_app))
+        if res.status_code == 200:
+            app_details = res.json()
+            app_name = app_details["nameApp"]
+        else:
+            app_name = str(task_model.id_app)
+
+        task = {
+            "appName": app_name,
+            "tasks": [cockpit_model_to_schema(task_model).json()]
+        }
+        return task
     raise NoSuchTaskException(f"No task with id = {id_task}")
 
 
