@@ -88,7 +88,6 @@ def get_all_user_tasks(id_user, db: Session):
         else:
             app_name = str(id_app)
 
-
         app = {
             "appName": app_name,
             "tasks": tasks_to_json_list(user_tasks.filter(CockpitModel.id_app == id_app))
