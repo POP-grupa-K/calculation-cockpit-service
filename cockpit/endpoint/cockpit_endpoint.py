@@ -29,8 +29,8 @@ def get_db():
 
 
 @router.get("/", tags=["Backend Cockpit"])
-async def list_tasks(db: Session = Depends(get_db)):
-    tasks = get_all_tasks_as_json_list(db)
+async def list_tasks(states: str = "created", db: Session = Depends(get_db)):
+    tasks = get_all_tasks_as_json_list(states, db)
     if tasks is not None:
         return JSONResponse(status_code=status.HTTP_200_OK, content=jsonable_encoder(tasks))
 

@@ -26,13 +26,17 @@ def create_task(app: CockpitSchema, db: Session) -> int:
     return new_task.id_task
 
 
-def get_all_tasks(db: Session) -> List[CockpitModel]:
-    tasks_models = db.query(CockpitModel).filter(CockpitModel.status != "deleted")
+def get_all_tasks(states: str, db: Session) -> List[CockpitModel]:
+    result = [x.strip() for x in states.split(',')]
+    tasks_models = []
+    for t in db.query(CockpitModel):
+        if t.status in result:
+            tasks_models.append(t)
     return tasks_models
 
 
-def get_all_tasks_as_json_list(db: Session):
-    tasks_models = get_all_tasks(db)
+def get_all_tasks_as_json_list(states: str, db: Session):
+    tasks_models = get_all_tasks(states, db)
 
     tasks = []
     for task in tasks_models:
