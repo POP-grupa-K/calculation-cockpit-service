@@ -49,7 +49,7 @@ async def add_task(cock: CockpitSchema, db: Session = Depends(get_db)):
 
 
 @router.put("/{id_task}", tags=["Backend Cockpit"])
-async def update_task(id_task: int, cock: CockpitSchema, db: Session = Depends(get_db)):
+async def edit_task(id_task: int, cock: CockpitSchema, db: Session = Depends(get_db)):
     try:
         task: CockpitSchema = update_task(id_task, cock, db)
         return JSONResponse(status_code=status.HTTP_200_OK, content=jsonable_encoder(task))

@@ -66,6 +66,7 @@ def get_task_schema(id_task: int, db: Session):
             app_name = str(task_model.id_app)
 
         task = {
+            "appId": task_model.id_app,
             "appName": app_name,
             "tasks": [cockpit_model_to_schema(task_model).json()]
         }
