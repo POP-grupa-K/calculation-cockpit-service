@@ -157,6 +157,8 @@ def set_task_status_to_stopped(id_task: int, db: Session):
 
 def add_app_to_cockpit(user_app: UserAppSchema, db: Session):
     new_app = UserAppModel.from_schema(user_app)
+    if not check_if_app_is_available(user_app.id_app):
+        raise TaskAppNotAvailable(f"App with id = {user_app.id_app} is not availble")
 
     new_task = CockpitModel(name="task", reserved_credits="0", id_app=user_app.id_app, status="created", priority="-1", id_user=user_app.id_user)
     new_task.date_update = datetime.now().isoformat()

@@ -44,7 +44,7 @@ async def add_task(cock: CockpitSchema, db: Session = Depends(get_db)):
         return JSONResponse(status_code=status.HTTP_201_CREATED, content=encode_to_json_message(cock_id))
 
     except TaskAppNotAvailable as e:
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=encode_to_json_message(f"App from task is not availble"))
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=encode_to_json_message(f"App from task is not available"))
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content=encode_to_json_message(e))
 
@@ -139,5 +139,7 @@ async def add_app(user_app_schema: UserAppSchema, db: Session = Depends(get_db))
     try:
         add_app_to_cockpit(user_app_schema, db)
         return JSONResponse(status_code=status.HTTP_200_OK, content=encode_to_json_message("OK"))
+    except TaskAppNotAvailable as e:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=encode_to_json_message(f"App with given id is not available"))
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
