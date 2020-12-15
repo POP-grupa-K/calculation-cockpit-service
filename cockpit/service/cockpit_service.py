@@ -5,9 +5,12 @@ from sqlalchemy.orm import Session
 from cockpit.exceptions.cockpit_exceptions import NoSuchTaskException, TaskIsAlreadyRunningException, \
     TaskIsAlreadyStoppedException, TaskAppNotAvailable
 from cockpit.model.cockpit_model import CockpitModel
+from cockpit.model.user_app_model import UserAppModel
 from cockpit.schema.cockpit_schema import CockpitSchema
 from typing import List
 import requests
+
+from cockpit.schema.user_app_schema import UserAppSchema
 from cockpit.utils.mapper.cockpit_mapper import cockpit_model_to_schema
 
 
@@ -150,3 +153,15 @@ def set_task_status_to_stopped(id_task: int, db: Session):
         db.commit()
     else:
         raise NoSuchTaskException(f"No task with id = {id_task}")
+
+
+def add_app_to_cockpit(user_app: UserAppSchema, db: Session):
+    new_app = UserAppModel.from_schema(user_app)
+
+    new_task = CockpitModel(name="task", reserved_credits="0", id_app=user_app.id_app, status="created", priority="-1", id_user=user_app.id_user)
+    new_task.date_update = datetime.now().isoformat()
+
+    db.add(new_task)
+    db.add(new_app)
+    db.commit()
+    db.refresh(new_app)

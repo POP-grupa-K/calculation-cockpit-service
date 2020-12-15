@@ -9,9 +9,10 @@ from starlette import status
 from cockpit.exceptions.cockpit_exceptions import NoSuchTaskException, TaskIsAlreadyRunningException, \
     TaskIsAlreadyStoppedException, TaskAppNotAvailable
 from cockpit.schema.cockpit_schema import CockpitSchema
+from cockpit.schema.user_app_schema import UserAppSchema
 from cockpit.service.cockpit_service import create_task, get_all_tasks_as_json_list, get_task_schema, \
     get_task_models_by_status_and_app, tasks_to_json_list, update_task, set_task_status_to_running, \
-    set_task_status_to_stopped, get_all_user_tasks, delete_task
+    set_task_status_to_stopped, get_all_user_tasks, delete_task, add_app_to_cockpit
 from cockpit.utils.message_encoder.json_message_encoder import encode_to_json_message
 from run import SessionLocal
 from fastapi.responses import JSONResponse
@@ -132,3 +133,11 @@ async def delete_task_by_id(id_task: int, db: Session = Depends(get_db)):
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+@router.post("/apps", tags=["Backend Cockpit"])
+async def add_app(user_app_schema: UserAppSchema, db: Session = Depends(get_db)):
+    try:
+        add_app_to_cockpit(user_app_schema, db)
+        return JSONResponse(status_code=status.HTTP_200_OK, content=encode_to_json_message("OK"))
+    except Exception as e:
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
