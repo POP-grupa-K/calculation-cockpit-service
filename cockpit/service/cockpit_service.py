@@ -25,7 +25,6 @@ def create_task(app: CockpitSchema, db: Session) -> int:
 
 def get_all_tasks(states: str, db: Session) -> List[CockpitModel]:
     result = [x.strip() for x in states.split(',')]
-    print("Hello: ", result)
     tasks_models = []
     for t in db.query(CockpitModel):
         if t.status in result:
