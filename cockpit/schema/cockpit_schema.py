@@ -11,6 +11,7 @@ class CockpitSchema(CamelModel):
     reserved_credits: int
     id_app: int
     status: Optional[str] = "created"
+    priority: Optional[str] = "1"
     id_user: int
 
     class Config:
