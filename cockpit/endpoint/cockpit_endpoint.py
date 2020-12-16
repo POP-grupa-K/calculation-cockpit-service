@@ -28,7 +28,7 @@ def get_db():
         db.close()
 
 
-@router.get("/", tags=["Backend Cockpit"])
+@router.get("/", tags=["Backend Cockpit - ICockpitCrud"])
 async def list_tasks(states: str = "created", db: Session = Depends(get_db)):
     tasks = get_all_tasks_as_json_list(states, db)
     if tasks is not None:
@@ -37,7 +37,7 @@ async def list_tasks(states: str = "created", db: Session = Depends(get_db)):
     return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@router.post("/", tags=["Backend AppStore"])
+@router.post("/", tags=["Backend Cockpit - ICockpitCrud"])
 async def add_task(cock: CockpitSchema, db: Session = Depends(get_db)):
     try:
         cock_id = create_task(cock, db)
@@ -49,7 +49,7 @@ async def add_task(cock: CockpitSchema, db: Session = Depends(get_db)):
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content=encode_to_json_message(e))
 
 
-@router.put("/{id_task}", tags=["Backend Cockpit"])
+@router.put("/{id_task}", tags=["Backend Cockpit - ICockpitCrud"])
 async def edit_task(id_task: int, cock: CockpitSchema, db: Session = Depends(get_db)):
     try:
         task: CockpitSchema = update_task(id_task, cock, db)
@@ -61,7 +61,7 @@ async def edit_task(id_task: int, cock: CockpitSchema, db: Session = Depends(get
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content=encode_to_json_message(e))
 
 
-@router.get("/{id_task}", tags=["Backend Cockpit"])
+@router.get("/{id_task}", tags=["Backend Cockpit - ICockpitCrud"])
 async def get_task(id_task: int, db: Session = Depends(get_db)):
     try:
         task: CockpitSchema = get_task_schema(id_task, db)
@@ -73,7 +73,7 @@ async def get_task(id_task: int, db: Session = Depends(get_db)):
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content=encode_to_json_message(e))
 
 
-@router.get("/{id_app}/{task_status}", tags=["Backend Cockpit"])
+@router.get("/{id_app}/{task_status}", tags=["Backend Cockpit - ICockpitCrud"])
 async def get_tasks_for_app(id_app: int, task_status: str, db: Session = Depends(get_db)):
     task_models = get_task_models_by_status_and_app(id_app, task_status, db)
     tasks = tasks_to_json_list(task_models)
@@ -83,7 +83,7 @@ async def get_tasks_for_app(id_app: int, task_status: str, db: Session = Depends
     return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@router.get("/user/tasks/{id_user}", tags=["Backend Cockpit"])
+@router.get("/user/tasks/{id_user}", tags=["Backend Cockpit - ICockpitCrud"])
 async def get_user_tasks(id_user: int, db: Session = Depends(get_db)):
     try:
         user_tasks = get_all_user_tasks(id_user, db)
@@ -93,7 +93,7 @@ async def get_user_tasks(id_user: int, db: Session = Depends(get_db)):
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content=encode_to_json_message(e))
 
 
-@router.post("/{id_task}/run", tags=["Backend Cockpit"])
+@router.post("/{id_task}/run", tags=["Backend Cockpit - ICockpitCrud"])
 async def run_task(id_task: int, db: Session = Depends(get_db)):
     try:
         set_task_status_to_running(id_task, db)
@@ -109,7 +109,7 @@ async def run_task(id_task: int, db: Session = Depends(get_db)):
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content=encode_to_json_message(e))
 
 
-@router.post("/{id_task}/stop", tags=["Backend Cockpit"])
+@router.post("/{id_task}/stop", tags=["Backend Cockpit - ICockpitCrud"])
 async def stop_task(id_task: int, db: Session = Depends(get_db)):
     try:
         set_task_status_to_stopped(id_task, db)
@@ -123,7 +123,7 @@ async def stop_task(id_task: int, db: Session = Depends(get_db)):
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content=encode_to_json_message(e))
 
 
-@router.delete("/{id_task}", tags=["Backend Cockpit"])
+@router.delete("/{id_task}", tags=["Backend Cockpit - ICockpitCrud"])
 async def delete_task_by_id(id_task: int, db: Session = Depends(get_db)):
     try:
         delete_task(id_task, db)
@@ -134,7 +134,7 @@ async def delete_task_by_id(id_task: int, db: Session = Depends(get_db)):
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@router.post("/apps", tags=["Backend Cockpit"])
+@router.post("/apps", tags=["Backend Cockpit - ICockpitCrud"])
 async def add_app(user_app_schema: UserAppSchema, db: Session = Depends(get_db)):
     try:
         add_app_to_cockpit(user_app_schema, db)

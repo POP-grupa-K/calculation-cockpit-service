@@ -108,6 +108,7 @@ def get_all_user_tasks(id_user, db: Session):
             app_name = str(id_app)
 
         app = {
+            "appId": id_app,
             "appName": app_name,
             "tasks": tasks_to_json_list(user_tasks.filter(CockpitModel.id_app == id_app))
         }
@@ -131,7 +132,7 @@ def set_task_status_to_running(id_task: int, db: Session):
 
 def check_if_app_is_available(id_app: int):
     # FIXME url w envach trzeba trzymac
-    res = requests.get("http://appstore:8005/appstore/{}".format(id_app))    
+    res = requests.get("http://appstore:8005/appstore/{}".format(id_app))
     if (res.status_code == 200):
         app_details = res.json()
         if (app_details['status'] == 'available'):
